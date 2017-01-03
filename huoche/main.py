@@ -47,7 +47,7 @@ from_station = args[0]
 # 目的地
 to_station = args[1]
 
-headers = '出发站 目的地 车次 日期 历时 硬卧 软卧 一等座 二等座 商务座'.split()
+headers = '出发站 目的地 车次 日期 开始 历时 结束 硬卧 软卧 一等座 二等座'.split()
 
 url = 'https://kyfw.12306.cn/otn/leftTicket/queryA?leftTicketDTO.train_date={}&leftTicketDTO.from_station=%s&leftTicketDTO.to_station=%s&purpose_codes=ADULT' % (
     cities.cities.get(from_station, ''), cities.cities.get(to_station, ''))
@@ -60,7 +60,6 @@ def get_day_data(date):
     :return:        车次信息list
     """
     real_url = url.format(date)
-    print(real_url)
     response = requests.get(real_url, verify=False)
 
     return response.json().get('data')
@@ -72,7 +71,13 @@ def filter_empty(item):
     :param item:
     :return:
     """
-    types = ['yw_num', 'rw_num', 'gr_num', 'zy_num', 'ze_num', 'swz_num']
+    types = []
+    types.append('yw_num')
+    types.append('rw_num')
+    # types.append('gr_num')
+    types.append('zy_num')
+    types.append('ze_num')
+    # types.append('swz_num')
 
     for type in types:
         if item.get('queryLeftNewDTO').get(type) not in ['--', '无']:
@@ -94,12 +99,13 @@ def get_useful_data(item):
             item.get('queryLeftNewDTO').get('to_station_name'),
             item.get('queryLeftNewDTO').get('station_train_code'),
             date[4:6] + '-' + date[6:],
+            item.get('queryLeftNewDTO').get('start_time'),
             item.get('queryLeftNewDTO').get('lishi'),
+            item.get('queryLeftNewDTO').get('arrive_time'),
             item.get('queryLeftNewDTO').get('yw_num'),
             item.get('queryLeftNewDTO').get('rw_num'),
             item.get('queryLeftNewDTO').get('zy_num'),
             item.get('queryLeftNewDTO').get('ze_num'),
-            item.get('queryLeftNewDTO').get('swz_num')
         ]
     else:
         return []
