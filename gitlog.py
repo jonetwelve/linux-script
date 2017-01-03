@@ -3,16 +3,14 @@
 
 from prettytable import PrettyTable
 import subprocess
-import datetime
 import sys
 
 try:
-    ago = int(sys.argv[1])
+    lines = sys.argv[1]
 except:
-    ago = 5
+    lines = str(5)
 
-four_days_before = (datetime.datetime.now() - datetime.timedelta(days=ago)).strftime('%Y-%m-%d')
-command = 'git log --pretty=format:"%h %an %s" --since={' + four_days_before + '}'
+command = 'git log -' + lines + ' --pretty=format:"%h %an %s"'
 
 gitlog = subprocess.Popen([command], stdout=subprocess.PIPE, shell=True).communicate()
 
