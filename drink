@@ -1,0 +1,7 @@
+#!/usr/bin/sh
+
+while true
+do
+	i3-nagbar -m 'dr' > /dev/null
+	sleep 20m
+done

@@ -1,0 +1,34 @@
+#!/usr/bin/sh
+
+function start_base(){
+	echo '#!/bin/sh' > ~/.xinitrc
+
+	echo 'export LANG=zh_CN.UTF-8' >> ~/.xinitrc
+	
+	echo 'export PATH=/usr/local/bin/:$PATH' >> ~/.xinitrc
+	
+	echo 'export GTK_IM_MODULE=fcitx' >> ~/.xinitrc
+	echo 'export QT_IM_MODULE=fcitx' >> ~/.xinitrc
+	echo 'export XMODIFIERS=@im=fcitx' >> ~/.xinitrc
+	
+	echo 'xrandr --output HDMI2 --primary' >> ~/.xinitrc
+	echo 'xrandr --output HDMI2 --mode 1920x1080 --right-of eDP1' >> ~/.xinitrc
+}
+
+function start_i3(){
+	start_base
+	echo 'exec i3' >> ~/.xinitrc
+}
+
+function start_kde(){
+	start_base
+	echo 'exec startkde' >> ~/.xinitrc
+}
+
+case $1 in
+	i3|i)		start_i3;;
+	kde|k)		start_kde;;
+	*)			start_i3;;
+esac
+
+startx
