@@ -2,7 +2,7 @@
 
 # get config
 read -p "Input root passwd:" -s rootpwd
-echo 
+echo
 read -p "Input shadowsocks passwd:" -s shadowsockspwd
 
 
@@ -16,10 +16,12 @@ apt install -y python-pip
 apt install -y supervisor
 #### auto start
 systemctl start supervisor
+systemctl enable supervisor
 
 
 # shadowsocks
 apt install -y python-gevent
+pip install setuptools
 pip install shadowsocks
 #### write the config
 echo '{' > /etc/shadowsocks.json
