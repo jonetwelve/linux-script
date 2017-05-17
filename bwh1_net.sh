@@ -10,7 +10,7 @@ read -p "Input shadowsocks passwd:" -s shadowsockspwd
 (echo $rootpwd;sleep 1;echo $rootpwd) | passwd > /dev/null
 
 apt update
-apt install -y python-pip
+apt install -y pythoni3-pip gcc python3-dev
 
 # supervisor
 apt install -y supervisor
@@ -21,8 +21,8 @@ systemctl enable supervisor
 
 # shadowsocks
 apt install -y python-gevent
-pip install setuptools
-pip install shadowsocks
+pip3 install setuptools
+pip3 install shadowsocks
 #### write the config
 echo '{' > /etc/shadowsocks.json
 echo '"server":"0.0.0.0",' >> /etc/shadowsocks.json
