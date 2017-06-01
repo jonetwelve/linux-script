@@ -10,7 +10,7 @@ read -p "Input shadowsocks passwd:" -s shadowsockspwd
 (echo $rootpwd;sleep 1;echo $rootpwd) | passwd > /dev/null
 
 apt update
-apt install -y pythoni3-pip gcc python3-dev
+apt install -y python3-pip gcc python3-dev python3-venv
 
 # supervisor
 apt install -y supervisor
@@ -39,7 +39,26 @@ echo 'dirctory=/usr/local/bin' >> /etc/supervisor/conf.d/ssserver.conf
 echo 'user=root' >> /etc/supervisor/conf.d/ssserver.conf
 
 
-apt install -y nginx
+apt install -y nginx gunicorn
 apt install -y mariadb-server
 apt install -y libmysqlclient-dev
 
+:<<'
+----ngin.conf
+server {
+        listen  80;
+        server_name domain1 domain2;
+
+        location / {
+                proxy_pass http://127.0.0.1:5000;
+                proxy_set_header Host $host;
+        	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+}
+
+----supervisor
+[program:domain]
+directory=/domain/path
+command=gunicorn -w 4 -b 127.0.0.1 run:app
+user=www-data
+'
