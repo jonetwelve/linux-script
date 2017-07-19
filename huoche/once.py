@@ -88,20 +88,32 @@ def filter_empty(item):
 
     return False
 
+
 def color_warning(tmp):
     if tmp != 'null':
         tmp = '_' + tmp + '_'
     return tmp
 
 
-
 def get_useful_data(item):
     if filter_no(item):
         date = item.get('queryLeftNewDTO').get('start_train_date')
-        yw = color_warning(item.get('queryLeftNewDTO').get('yw_num').replace('无', 'null').replace('--', 'null'))
-        zy = color_warning(item.get('queryLeftNewDTO').get('zy_num').replace('无', 'null').replace('--', 'null'))
-        rw = color_warning(item.get('queryLeftNewDTO').get('rw_num').replace('无', 'null').replace('--', 'null'))
-        ze = color_warning(item.get('queryLeftNewDTO').get('ze_num').replace('无', 'null').replace('--', 'null'))
+        yw = color_warning(
+            item.get('queryLeftNewDTO').get('yw_num').replace(
+                '无', 'null').replace(
+                '--', 'null'))
+        zy = color_warning(
+            item.get('queryLeftNewDTO').get('zy_num').replace(
+                '无', 'null').replace(
+                '--', 'null'))
+        rw = color_warning(
+            item.get('queryLeftNewDTO').get('rw_num').replace(
+                '无', 'null').replace(
+                '--', 'null'))
+        ze = color_warning(
+            item.get('queryLeftNewDTO').get('ze_num').replace(
+                '无', 'null').replace(
+                '--', 'null'))
         back = [
             item.get('queryLeftNewDTO').get('station_train_code'),
             date[4:6] + '-' + date[6:],
@@ -145,6 +157,7 @@ def show_table(date):
     print(re_color.sub(r'${color red} \1 ${color}', tmp))
     print('')
 
-print(from_station, '~',to_station)
+
+print(from_station, '~', to_station)
 for d in date:
     threading.Thread(target=show_table, args=(d,)).start()

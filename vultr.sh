@@ -4,34 +4,32 @@
 read -p "Input root passwd:" -s rootpwd
 echo
 read -p "Input shadowsocks passwd:" -s shadowsockspwd
+# set password
+(echo $rootpwd;sleep 1;echo $rootpwd) | passwd > /dev/null
 
 
 ######################centos
 #关闭防火墙：
 iptables -I INPUT -p tcp --dport 80 -j ACCEPT
+iptables -I INPUT -p tcp --dport 443 -j ACCEPT
 service iptables save
 #关闭selinux：
 setenforce 0
-vim /etc/selinux/config
+#vim /etc/selinux/config
 #SELINUX=enforcing改为SELINUX=disabled
 ######################centos end
  
 
-# set password
-(echo $rootpwd;sleep 1;echo $rootpwd) | passwd > /dev/null
 
-apt update
-apt install -y python3-pip gcc python3-dev python3-venv
+yum update
+yum install -y gcc python3-devel python-virtualenv python34-setuptools
 
 # supervisor
-apt install -y supervisor
-#### auto start
-systemctl start supervisor
-systemctl enable supervisor
+yum install -y supervisor
 
 
 # shadowsocks
-apt install -y python-gevent
+easy_install-3.4 pip
 pip3 install setuptools
 pip3 install shadowsocks
 #### write the config
@@ -44,15 +42,23 @@ echo '"timeout":600,' >> /etc/shadowsocks.json
 echo '"method":"aes-256-cfb"' >> /etc/shadowsocks.json
 echo '}' >> /etc/shadowsocks.json
 #### auto start
-echo '[program:ssserver]' >> /etc/supervisor/conf.d/ssserver.conf
-echo 'command=ssserver -c /etc/shadowsocks.json' >> /etc/supervisor/conf.d/ssserver.conf
-echo 'dirctory=/usr/local/bin' >> /etc/supervisor/conf.d/ssserver.conf
-echo 'user=root' >> /etc/supervisor/conf.d/ssserver.conf
+echo '' >> /etc/supervisord.conf
+echo '' >> /etc/supervisord.conf
+echo '[program:ssserver]' >> /etc/supervisord.conf
+echo 'command=ssserver -c /etc/shadowsocks.json' >> /etc/supervisord.conf
+echo 'dirctory=/usr/local/bin' >> /etc/supervisord.conf
+echo 'user=root' >> /etc/supervisord.conf
+echo '' >> /etc/supervisord.conf
 
 
-apt install -y nginx gunicorn
-apt install -y mariadb-server
-apt install -y libmysqlclient-dev
+supervisord -c /etc/supervisord.conf
+supervisotctl reload
+
+
+yum install -y nginx 
+pip3 install gunicorn
+yum install -y mysql-server mysql mysql-devel
+
 
 :<<'
 ----ngin.conf
